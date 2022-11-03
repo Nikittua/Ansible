@@ -1,9 +1,9 @@
 ---
-- name: test play
-  hosts: vms
+- name: My first play
+  hosts: virtualmachines
   tasks:
-    - name: ping all hosts
-      ansible.buildin.ping
-    - name: Print msg
-      ansible.buildin.debug
-        msg: Hello
+   - name: Ping my hosts
+     ansible.builtin.ping:
+   - name: Print message
+     ansible.builtin.debug:
+       msg: Hello world

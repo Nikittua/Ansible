@@ -9,5 +9,8 @@
       name: apache2
       state: present
 
-  # - name: start apache and enable
-  #   service: name=httpd state=sterted enabled=yes
+  - name: start apache and enable
+    service:  
+      name: httpd 
+      state: sterted 
+      enabled: yes

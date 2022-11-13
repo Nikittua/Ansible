@@ -1,0 +1,11 @@
+---
+- name: install deafault apache web servers
+  hosts: vms
+  become: true
+
+  tasks:
+  - name: install apache web servers
+    apt: name=httpd state=latest
+
+  - name: start apache and enable
+    service: name=httpd state=sterted enabled=yes

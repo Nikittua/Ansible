@@ -3,6 +3,6 @@
   hosts: vms
   become: true
   tasks:
-    - name: ping servers
+    - name: ping
       ping:
-      
+

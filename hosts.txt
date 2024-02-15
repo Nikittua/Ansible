@@ -1,2 +1,2 @@
-[vms]
-user@10.99.100.36
+[test]
+sni02.test.rvision.local

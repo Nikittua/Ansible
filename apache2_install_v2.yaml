@@ -4,7 +4,7 @@
   become: yes
 
   vars:
-    source_file: ./index.html
+    source_file: ./MyWebPage/index.html
     destin_file: /var/www/html
 
 

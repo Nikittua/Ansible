@@ -14,7 +14,7 @@
 
 
   - name: Copy MyHomePage to servers
-    copy: scr={{ source_file }} dest={{ destin_file }} mode=0555
+    copy: src={{ source_file }} dest={{ destin_file }} mode=0555
     notify: Restart Apache
 
   - name: Start and enable web server

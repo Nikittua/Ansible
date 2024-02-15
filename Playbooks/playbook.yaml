@@ -1,8 +1,0 @@
----
-- name: test con
-  hosts: vms
-  become: true
-  tasks:
-    - name: ping
-      ping:
-

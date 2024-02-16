@@ -1,2 +1,2 @@
 [test]
-sni02.test.rvision.local
+server01 ansible_host=sni02.test.rvision.local   owner=IT

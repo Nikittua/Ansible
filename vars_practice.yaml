@@ -1,0 +1,41 @@
+---
+- name: Playbook for vars testing
+  hosts: all
+  become: yes
+
+# обозначнаем переменные
+  vars:
+    message1: Hello
+    message2: World!
+    secret: asdkjfa;fb;ljfd;aweruw39p34y2fbcs8
+
+  tasks:
+# печать переменной
+  - name: Print secret variable
+    debug: 
+      var: secret
+
+# печать сообщения с возможностью передачи переменной
+  - debug:
+      msg: "secretnoe coobchenie: {{ secret }}"
+
+# тут переменная owner берется из файлика host
+  - debug:
+      msg: "Vladelec etogo servera --> {{ owner }}<--"
+
+# set_fact, как я понял, создает новую переменную, в которую можно передавтаь текст и ругие переменные
+  - set_fact: full_msg="{{ message1 }} {{ message2 }} from {{ owner }} "
+# тут мы печатаем новую переменную set_fact
+  - debug:
+      var: full_msg
+
+# распечатать параметр(ip адрес вывода ansible all -m setup
+  - debug:
+      var: ansible_ens192.ipv4.address
+# выполнение команды uptime и сохранение вывода в переменную
+  - shell: uptime
+    register: uptime_results
+
+  - debug:
+      var: uptime_results.stdout
+

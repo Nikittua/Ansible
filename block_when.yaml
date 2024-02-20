@@ -13,8 +13,7 @@
 
  
 
- - block: # ====Block For RedHat==== 
-
+  - block: # ====Block For RedHat==== 
 
      - name: Install Apache for RedHat
        yum: name=apache2 state=present
@@ -25,19 +24,25 @@
        notify: Restart Apache RedHat
 
 
-      - name: Start and enable web server for RedHat
-        service: name=apache2 state=started enabled=yes
-    
+     - name: Start and enable web server for RedHat
+       service: name=apache2 state=started enabled=yes
+
     when: ansible_os_family == "RedHat"
 
 
-  - name: install Apache for Debian
-    apt: name=apache2 state=present
-    when: ansible_os_family == "Debian"
 
+  - block: # ====Block For Debian==== 
 
-  - name: Start and enable web server for Debian
-    service: name=apache2 state=started enabled=yes
+      - name: install Apache for Debian
+        apt: name=apache2 state=present
+
+      - name: Copy MyHomePage to servers
+        copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+        notify: Restart Apache Debian
+
+      - name: Start and enable web server for Debian
+        service: name=apache2 state=started enabled=yes
+    
     when: ansible_os_family == "Debian"
 
 
@@ -45,8 +50,8 @@
   handlers:
   - name: Restart Apache RedHat
     service: name=apache2 state=restarted
-
-  handlers:
-  - name: Restart Apache
+    
+  - name: Restart Apache Debian
     service: name=apache2 state=restarted
+
 

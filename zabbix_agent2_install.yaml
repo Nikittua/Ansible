@@ -6,6 +6,8 @@
   vars:
     source_file: ./zabbix_agent2.conf
     destin_file: /etc/zabbix
+    za2server: zabbix.companyname.pro
+    metadata: linux.autoreg
 
   tasks:
   - shell: awk -F= '/^VERSION_ID=/{print $2}' /etc/os-release | sed 's/\"//g'
@@ -14,8 +16,11 @@
   - shell: awk -F= '/^ID=/{print $2}' /etc/os-release | sed 's/\"//g'
     register: distrib
 
-  - debug:
-      msg: "https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+{{ distrib.stdout }}{{ version.stdout }}_all.deb"
+  - shell: hostname
+    register: hostname
+
+  # - debug:
+  #     msg: "https://repo.zabbix.com/zabbix/6.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.4-1+{{ distrib.stdout }}{{ version.stdout }}_all.deb"
 
 
 
@@ -31,7 +36,42 @@
         ansible.builtin.shell: dpkg -i /home/user/zabbix-release_6.4-1+{{distrib.stdout}}{{version.stdout}}_all.deb
         notify: Apt update Debian
 
+
+      - name: Install Zabbix agent2 
+        ansible.builtin.apt:
+          pkg:
+          -  zabbix-agent2
+          -  zabbix-agent2-plugin-*
+
+      - name: Creating a file with content
+        copy:
+          dest: /etc/zabbix/zabbix_agent2.conf
+          content: |
+            #Default Static Params
+
+            PidFile=/run/zabbix/zabbix_agent2.pid
+            LogFile=/var/log/zabbix/zabbix_agent2.log
+            LogFileSize=0
+            Server={{za2server}}
+            ServerActive={{za2server}}
+            Include=/etc/zabbix/zabbix_agent2.d/*.conf
+            ControlSocket=/tmp/agent.sock
+            Include=./zabbix_agent2.d/plugins.d/*.conf
+            #TLSConnect=psk
+            #TLSAccept=psk
+            #TLSPSKFile=/etc/zabbix/psk.key
+            HostMetadata={{metadata}}
+
+            #Dynamic Params
+
+            Hostname={{hostname.stdout}}
+            #TLSPSKIdentity={{hostname.stdout}}
+        notify: Restart Zabbix Agent2
+
+          
+
     when: ansible_os_family == "Debian"
+
 
 
 
@@ -39,6 +79,9 @@
   - name: Apt update Debian
     ansible.builtin.apt:
       update_cache: yes
+        
+  - name: Restart Zabbix Agent2
+    service: name=zabbix-agent2 state=restarted
 
 
 
